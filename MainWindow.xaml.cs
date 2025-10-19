@@ -24,8 +24,9 @@ namespace _3DRedactor
 
         public MainWindow()
         {
-            Figures = new List<LinesVisual3D>();
             counter = 0;
+
+            Figures = new List<LinesVisual3D>();
             InitializeComponent();
         }
 
@@ -72,6 +73,55 @@ namespace _3DRedactor
             }
 
             FigureList.Items.Clear();
+        }
+
+        private void TransformButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var selected = FigureList.SelectedItem;
+
+                if (selected == null || selected is not LineWrapper line) 
+                    return;
+
+                double xTranslate = Convert.ToDouble(TranslateXTextBox.Text);
+                double yTranslate = Convert.ToDouble(TranslateYTextBox.Text);
+                double zTranslate = Convert.ToDouble(TranslateZTextBox.Text);
+
+                double angle = Convert.ToDouble(RotateAngleTextBox.Text);
+
+                double xScale = Convert.ToDouble(ScaleXTextBox.Text);
+                double yScale = Convert.ToDouble(ScaleYTextBox.Text);
+                double zScale = Convert.ToDouble(ScaleZTextBox.Text);
+
+                var transformGroup = new Transform3DGroup();
+
+                transformGroup.Children.Add(new TranslateTransform3D(xTranslate, yTranslate, zTranslate));
+                transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), angle)));
+                transformGroup.Children.Add(new ScaleTransform3D(xScale, yScale, zScale));
+
+                line.Transform = transformGroup;
+            }
+            catch (FormatException)
+            {
+                MessageBox.Show("Пожалуйста, введите корректные координаты.",
+                    "Ошибка ввода!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при создании 3D фигуры: {ex.Message}",
+                    "Неизвестная ошибка!", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            var selected = FigureList.SelectedItem;
+
+            if (selected == null || selected is not LineWrapper line)
+                return;
+
+            line.Transform = Transform3D.Identity;
         }
     }
 }

@@ -7,13 +7,13 @@
         mc:Ignorable="d"
         Title="PointsEditor" Height="450" Width="800">
     <Grid>
-        <ListBox x:Name="PointsList" d:ItemsSource="{d:SampleData ItemCount=0}" Margin="0,105,0,59"/>
+        <ListBox x:Name="PointsList" d:ItemsSource="{d:SampleData ItemCount=0}" Margin="0,105,0,75"/>
         <TextBox x:Name="XBox" HorizontalAlignment="Left" Margin="79,71,0,0" TextWrapping="Wrap" Text="X координата" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="YBox" HorizontalAlignment="Left" Margin="366,71,0,0" TextWrapping="Wrap" Text="Y координата" VerticalAlignment="Top" Width="120"/>
         <TextBox x:Name="ZBox" HorizontalAlignment="Left" Margin="646,71,0,0" TextWrapping="Wrap" Text="Z координата" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="AddButton" Content="Добавить" HorizontalAlignment="Left" Margin="188,10,0,0" VerticalAlignment="Top" Height="34" Width="192" Click="AddButton_Click"/>
         <Button x:Name="DeleteButton" Content="Удалить" HorizontalAlignment="Left" Margin="482,10,0,0" VerticalAlignment="Top" Height="34" Width="192" Click="DeleteButton_Click"/>
-        <Button x:Name="Ок" Content="Ок" HorizontalAlignment="Center" Margin="0,390,0,0" VerticalAlignment="Top" Height="34" Width="192" Click="Ок_Click"/>
+        <Button x:Name="Ок" Content="Ок" HorizontalAlignment="Center" Margin="0,373,0,0" VerticalAlignment="Top" Height="28" Width="192" Click="Ок_Click"/>
 
     </Grid>
 </Window>
