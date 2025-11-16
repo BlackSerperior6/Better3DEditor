@@ -300,10 +300,7 @@ namespace _3DRedactor
                         points.Add(new Point3D(double.Parse(pointCoord[0]), double.Parse(pointCoord[1]),
                             double.Parse(pointCoord[2])));
                         
-                    }
-
-                    string[] lastLine = currentLine[^1].Split(";");
-                    Matrix3D tarnsformMatrix = Matrix3D.Parse(currentLine[^1]);
+                    } 
 
                     var lines = new LineWrapper(lineName)
                     {
@@ -315,7 +312,16 @@ namespace _3DRedactor
                     ViewPoint.Children.Add(lines);
                     FigureList.Items.Add(lines);
 
-                    lines.Transform = new MatrixTransform3D(tarnsformMatrix);
+                    string[] lastLine = currentLine[^1].Split(";");
+
+                    if (lastLine.Length > 1)
+                    {
+                        Matrix3D tarnsformMatrix = new Matrix3D(double.Parse(lastLine[0]), double.Parse(lastLine[1]), double.Parse(lastLine[2]), double.Parse(lastLine[3]),
+                        double.Parse(lastLine[4]), double.Parse(lastLine[5]), double.Parse(lastLine[6]), double.Parse(lastLine[7]), double.Parse(lastLine[8]), double.Parse(lastLine[9]), double.Parse(lastLine[10]),
+                        double.Parse(lastLine[11]), double.Parse(lastLine[12]), double.Parse(lastLine[13]), double.Parse(lastLine[14]), double.Parse(lastLine[15]));
+
+                        lines.Transform = new MatrixTransform3D(tarnsformMatrix);
+                    }
                 }
 
                 PathLabel.Content = openFileDialog.FileName;
