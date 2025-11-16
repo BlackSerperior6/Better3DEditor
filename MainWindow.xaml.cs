@@ -205,34 +205,8 @@ namespace _3DRedactor
                 path = saveFileDialog.FileName;
             }
 
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendLine(counter.ToString());
-            sb.AppendLine($"{TranslateXTextBox.Text}/{TranslateYTextBox.Text}/{TranslateZTextBox.Text}/" +
-                $"{RotateAngleTextBox.Text}/{ScaleXTextBox.Text}/{ScaleYTextBox.Text}/{ScaleZTextBox.Text}");
-
-            foreach (var figure in FigureList.Items)
-            {
-                if (figure == null || figure is not LineWrapper line)
-                    continue;
-
-                string lineToString = line.Name + "\n";
-                lineToString += line.Points[0].ToString();
-
-                for (int i = 1; i < line.Points.Count; i++)
-                    lineToString += ";" + $"{line.Points[i].X},{line.Points[i].Y},{line.Points[i].Z}";
-
-                var matrix = line.Transform.Value;
-
-                lineToString += ";" + $"{matrix.M11},{matrix.M12},{matrix.M13},{matrix.M14},{matrix.M21},{matrix.M22}," +
-                    $"{matrix.M23},{matrix.M24}," +
-                    $"{matrix.M31},{matrix.M32},{matrix.M33},{matrix.M34}," +
-                    $"{matrix.OffsetX},{matrix.OffsetY},{matrix.OffsetZ},{matrix.M44}";
-
-                sb.AppendLine(lineToString);
-            }
-
-            File.WriteAllText((string)path, sb.ToString());
+            Save((string) path);
+            PathLabel.Content = path;
         }
 
         private void SaveAsButton_Click(object sender, RoutedEventArgs e)
@@ -245,35 +219,39 @@ namespace _3DRedactor
 
             if (saveFileDialog.ShowDialog() == true)
             {
-                StringBuilder sb = new StringBuilder();
-
-                sb.AppendLine(counter.ToString());
-                sb.AppendLine($"{TranslateXTextBox}/{TranslateYTextBox}/{TranslateZTextBox}/" +
-                    $"{RotateAngleTextBox}/{ScaleXTextBox}/{ScaleYTextBox}/{ScaleZTextBox}");
-
-                foreach (var figure in FigureList.Items)
-                {
-                    if (figure == null || figure is not LineWrapper line)
-                        continue;
-
-                    string lineToString = line.Name + "\n";
-                    lineToString += $"{line.Points[0].X},{line.Points[0].Y},{line.Points[0].Z}";
-
-                    for (int i = 1; i < line.Points.Count; i++)
-                        lineToString += ";" + $"{line.Points[i].X},{line.Points[i].Y},{line.Points[i].Z}";
-
-                    var matrix = line.Transform.Value;
-
-                    lineToString += ";" + $"{matrix.M11},{matrix.M12},{matrix.M13},{matrix.M14},{matrix.M21},{matrix.M22}," +
-                        $"{matrix.M23},{matrix.M24}," +
-                        $"{matrix.M31},{matrix.M32},{matrix.M33},{matrix.M34}," +
-                        $"{matrix.OffsetX},{matrix.OffsetY},{matrix.OffsetZ},{matrix.M44}";
-
-                    sb.AppendLine(lineToString);
-                }
-
-                File.WriteAllText(saveFileDialog.FileName, sb.ToString());
+                Save(saveFileDialog.FileName);
+                PathLabel.Content = saveFileDialog.FileName;
             }
+        }
+
+        private void Save(string path)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine(counter.ToString());
+            sb.AppendLine($"{TranslateXTextBox.Text}/{TranslateYTextBox.Text}/{TranslateZTextBox.Text}/" +
+                $"{RotateAngleTextBox.Text}/{ScaleXTextBox.Text}/{ScaleYTextBox.Text}/{ScaleZTextBox.Text}");
+
+            foreach (var figure in FigureList.Items)
+            {
+                if (figure == null || figure is not LineWrapper line)
+                    continue;
+
+                string lineToString = line.Name;
+
+                for (int i = 0; i < line.Points.Count; i++)
+                    lineToString += "/" + $"{line.Points[i].X};{line.Points[i].Y};{line.Points[i].Z}";
+
+                var matrixLine = line.Transform.Value.ToString();
+
+                lineToString += "/" + matrixLine;
+
+                Console.WriteLine(matrixLine);
+
+                sb.AppendLine(lineToString);
+            }
+
+            File.WriteAllText(path, sb.ToString());
         }
 
         private void LoadButton_Click(object sender, RoutedEventArgs e)
@@ -293,6 +271,8 @@ namespace _3DRedactor
                     return;
                 }
 
+                NewButton_Click(sender, e);
+
                 string[] content = File.ReadAllLines(openFileDialog.FileName);
 
                 counter = int.Parse(content[0]);
@@ -309,23 +289,21 @@ namespace _3DRedactor
 
                 for (int i = 2; i < content.Length; i++) 
                 {
-                    string[] currentLine = content[i].Split(';');
+                    string[] currentLine = content[i].Split('/');
                     string lineName = currentLine[0];
 
                     Point3DCollection points = new Point3DCollection();
 
-                    for (int j = 1; j < currentLine.Length - 2; j++)
+                    for (int j = 1; j < currentLine.Length - 1; j++)
                     {
-                        string[] pointCoord = currentLine[j].Split(',');
+                        string[] pointCoord = currentLine[j].Split(';');
                         points.Add(new Point3D(double.Parse(pointCoord[0]), double.Parse(pointCoord[1]),
                             double.Parse(pointCoord[2])));
                         
                     }
 
-                    string[] lastLine = currentLine[^1].Split(",");
-                    Matrix3D tarnsformMatrix = new Matrix3D(double.Parse(lastLine[0]), double.Parse(lastLine[1]), double.Parse(lastLine[2]), double.Parse(lastLine[3]),
-                        double.Parse(lastLine[4]), double.Parse(lastLine[5]), double.Parse(lastLine[6]), double.Parse(lastLine[7]), double.Parse(lastLine[8]), double.Parse(lastLine[9]), double.Parse(lastLine[10]),
-                        double.Parse(lastLine[11]), double.Parse(lastLine[12]), double.Parse(lastLine[13]), double.Parse(lastLine[14]), double.Parse(lastLine[15]));
+                    string[] lastLine = currentLine[^1].Split(";");
+                    Matrix3D tarnsformMatrix = Matrix3D.Parse(currentLine[^1]);
 
                     var lines = new LineWrapper(lineName)
                     {
@@ -339,32 +317,6 @@ namespace _3DRedactor
 
                     lines.Transform = new MatrixTransform3D(tarnsformMatrix);
                 }
-
-                /*StringBuilder sb = new StringBuilder();
-
-                sb.AppendLine($"{TranslateXTextBox}/{TranslateYTextBox}/{TranslateZTextBox}/" +
-                    $"{RotateAngleTextBox}/{ScaleXTextBox}/{ScaleYTextBox}/{ScaleZTextBox}");
-
-                foreach (var figure in FigureList.Items)
-                {
-                    if (figure == null || figure is not LineWrapper line)
-                        continue;
-
-                    string figureLine = line.Points[0].ToString();
-
-                    for (int i = 1; i < line.Points.Count; i++)
-                        figureLine += ";" + line.Points[i].ToString();
-
-                    var matrix = line.Transform.Value;
-                    figureLine += ";" + $"{matrix.M11},{matrix.M12},{matrix.M13},{matrix.M14},{matrix.M21},{matrix.M22}," +
-                        $"{matrix.M23},{matrix.M24}," +
-                        $"{matrix.M31},{matrix.M32},{matrix.M33},{matrix.M34}," +
-                        $"{matrix.OffsetX},{matrix.OffsetY},{matrix.OffsetZ},{matrix.M44}";
-
-                    sb.AppendLine(figureLine);
-                }
-
-                File.WriteAllText(saveFileDialog.FileName, sb.ToString());*/
             }
         }
 
