@@ -317,6 +317,8 @@ namespace _3DRedactor
 
                     lines.Transform = new MatrixTransform3D(tarnsformMatrix);
                 }
+
+                PathLabel.Content = openFileDialog.FileName;
             }
         }
 
@@ -338,6 +340,8 @@ namespace _3DRedactor
             ScaleXTextBox.Text = "1";
             ScaleYTextBox.Text = "1";
             ScaleZTextBox.Text = "1";
+
+            PathLabel.Content = "";
         }
     }
 }
