@@ -40,13 +40,13 @@
 
         </h:HelixViewport3D>
         <Button x:Name="CreateButton" Content="Создать" HorizontalAlignment="Left" Margin="6,97,0,0" VerticalAlignment="Top" Width="136" Height="38" Click="CreateButton_Click" Grid.ColumnSpan="3" Grid.Column="1"/>
-        <TextBox x:Name="RotateAngleTextBox" HorizontalAlignment="Left" Margin="48,3,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="30" Grid.Row="1" Grid.Column="3"/>
+        <TextBox x:Name="RotateAngleXTextBox" HorizontalAlignment="Left" Margin="48,167,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="30" Grid.Column="3"/>
         <TextBox x:Name="TranslateYTextBox" HorizontalAlignment="Left" Margin="45,208,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="25" Height="20" Grid.Column="1"/>
         <ListBox x:Name="FigureList" DisplayMemberPath="Name" d:ItemsSource="{d:SampleData ItemCount=0}" SelectionMode="Extended" Margin="391,17,0,0" Grid.Row="1" Grid.Column="3" Grid.ColumnSpan="2"/>
         <TextBox x:Name="TranslateXTextBox" HorizontalAlignment="Left" Margin="45,167,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="25" Height="20" Grid.Column="1"/>
         <Label Content="X:" HorizontalAlignment="Left" Margin="13,164,0,0" VerticalAlignment="Top" Grid.Column="1"/>
         <Label Content="Y:" HorizontalAlignment="Left" Margin="13,205,0,0" VerticalAlignment="Top" Grid.Column="1"/>
-        <Label Content="Угол:" HorizontalAlignment="Left" Margin="4,241,0,0" VerticalAlignment="Top" Grid.RowSpan="2" Grid.Column="3"/>
+        <Label Content="Ось X:" HorizontalAlignment="Left" Margin="4,163,0,0" VerticalAlignment="Top" Grid.Column="3"/>
         <TextBox x:Name="TranslateZTextBox" HorizontalAlignment="Left" Margin="45,6,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="25" Grid.Row="1" Height="20" Grid.Column="1"/>
         <Label Content="Z:" HorizontalAlignment="Left" Margin="13,3,0,0" VerticalAlignment="Top" Grid.Row="1" Grid.Column="1"/>
         <TextBox x:Name="ScaleYTextBox" HorizontalAlignment="Left" Margin="167,207,0,0" TextWrapping="Wrap" Text="1" VerticalAlignment="Top" Width="25" Height="20" Grid.Column="3"/>
@@ -62,7 +62,15 @@
         <Label Content="Перемещение" HorizontalAlignment="Left" Margin="13,34,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.ColumnSpan="2" Grid.Column="1"/>
         <Label Content="Вращение" HorizontalAlignment="Left" Margin="30,33,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="3"/>
         <Label Content="Маштабирование" HorizontalAlignment="Left" Margin="125,33,0,0" Grid.Row="1" VerticalAlignment="Top" Grid.Column="3"/>
-        <DockPanel Grid.ColumnSpan="5">
+        <DockPanel Grid.ColumnSpan="5" RenderTransformOrigin="0.5,0.5">
+            <DockPanel.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="0.48"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </DockPanel.RenderTransform>
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="Файл">
                     <MenuItem Header="Новый" Click="NewButton_Click"/>
@@ -74,11 +82,27 @@
                 </MenuItem>
             </Menu>
 
-            <Grid>
+            <Grid RenderTransformOrigin="0.5,0.5">
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="-0.185"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Grid.RenderTransform>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="17*"/>
+                    <ColumnDefinition Width="383*"/>
+                </Grid.ColumnDefinitions>
                 <TextBlock x:Name="FilePathText" HorizontalAlignment="Left" 
-                       VerticalAlignment="Top" Margin="10" Foreground="Gray"/>
-                <Label x:Name="PathLabel" Content="" HorizontalAlignment="Center" Margin="0,5,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.338,-0.045" Width="780" Height="30"/>
+                       VerticalAlignment="Top" Margin="10,10,0,0" Foreground="Gray"/>
+                <Label x:Name="PathLabel" Content="" HorizontalAlignment="Left" Margin="10,5,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.338,-0.045" Width="780" Height="30" Grid.ColumnSpan="2"/>
             </Grid>
         </DockPanel>
+        <TextBox x:Name="RotateAngleZTextBox" HorizontalAlignment="Left" Margin="48,5,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="30" Grid.Column="3" Grid.Row="1"/>
+        <Label Content="Ось Z:" HorizontalAlignment="Left" Margin="4,1,0,0" VerticalAlignment="Top" Grid.Column="3" Grid.Row="1"/>
+        <TextBox x:Name="RotateAngleYTextBox" HorizontalAlignment="Left" Margin="48,208,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" Width="30" Grid.Column="3"/>
+        <Label Content="Ось Y:" HorizontalAlignment="Left" Margin="4,204,0,0" VerticalAlignment="Top" Grid.Column="3"/>
     </Grid>
 </Window>

@@ -58,7 +58,7 @@ namespace _3DRedactor
 
         private void DeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var line in FigureList.SelectedItems) 
+            foreach (var line in new List<object>((IEnumerable<object>)FigureList.SelectedItems)) 
             {
                 if (line == null)
                     continue;
@@ -88,7 +88,9 @@ namespace _3DRedactor
                 double yTranslate = Convert.ToDouble(TranslateYTextBox.Text);
                 double zTranslate = Convert.ToDouble(TranslateZTextBox.Text);
 
-                double angle = Convert.ToDouble(RotateAngleTextBox.Text);
+                double angleX = Convert.ToDouble(RotateAngleXTextBox.Text);
+                double angleY = Convert.ToDouble(RotateAngleYTextBox.Text);
+                double angleZ = Convert.ToDouble(RotateAngleZTextBox.Text);
 
                 double xScale = Convert.ToDouble(ScaleXTextBox.Text);
                 double yScale = Convert.ToDouble(ScaleYTextBox.Text);
@@ -109,7 +111,9 @@ namespace _3DRedactor
                 var transformGroup = new Transform3DGroup();
 
                 transformGroup.Children.Add(new TranslateTransform3D(xTranslate, yTranslate, zTranslate));
-                transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), angle)));
+                transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), angleX)));
+                transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), angleY)));
+                transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 0, 1), angleZ)));
                 transformGroup.Children.Add(new ScaleTransform3D(xScale, yScale, zScale));
 
                 group.Transform = transformGroup;
@@ -121,29 +125,6 @@ namespace _3DRedactor
 
                     BakeTransform(line, group);
                 }
-
-                /*var selected = FigureList.SelectedItem;
-
-                if (selected == null || selected is not LineWrapper line) 
-                    return;
-
-                double xTranslate = Convert.ToDouble(TranslateXTextBox.Text);
-                double yTranslate = Convert.ToDouble(TranslateYTextBox.Text);
-                double zTranslate = Convert.ToDouble(TranslateZTextBox.Text);
-
-                double angle = Convert.ToDouble(RotateAngleTextBox.Text);
-
-                double xScale = Convert.ToDouble(ScaleXTextBox.Text);
-                double yScale = Convert.ToDouble(ScaleYTextBox.Text);
-                double zScale = Convert.ToDouble(ScaleZTextBox.Text);
-
-                var transformGroup = new Transform3DGroup();
-
-                transformGroup.Children.Add(new TranslateTransform3D(xTranslate, yTranslate, zTranslate));
-                transformGroup.Children.Add(new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(1, 0, 0), angle)));
-                transformGroup.Children.Add(new ScaleTransform3D(xScale, yScale, zScale));
-
-                line.Transform = transformGroup;*/
             }
             catch (FormatException)
             {
@@ -230,7 +211,8 @@ namespace _3DRedactor
 
             sb.AppendLine(counter.ToString());
             sb.AppendLine($"{TranslateXTextBox.Text}/{TranslateYTextBox.Text}/{TranslateZTextBox.Text}/" +
-                $"{RotateAngleTextBox.Text}/{ScaleXTextBox.Text}/{ScaleYTextBox.Text}/{ScaleZTextBox.Text}");
+                $"{RotateAngleXTextBox.Text}/{RotateAngleYTextBox}/{RotateAngleZTextBox}/" +
+                $"{ScaleXTextBox.Text}/{ScaleYTextBox.Text}/{ScaleZTextBox.Text}");
 
             foreach (var figure in FigureList.Items)
             {
@@ -282,10 +264,12 @@ namespace _3DRedactor
                 TranslateXTextBox.Text = firstLine[0];
                 TranslateYTextBox.Text = firstLine[1];
                 TranslateZTextBox.Text = firstLine[2];
-                RotateAngleTextBox.Text = firstLine[3];
-                ScaleXTextBox.Text = firstLine[4];
-                ScaleYTextBox.Text = firstLine[5];
-                ScaleZTextBox.Text = firstLine[6];
+                RotateAngleXTextBox.Text = firstLine[3];
+                RotateAngleYTextBox.Text = firstLine[4];
+                RotateAngleZTextBox.Text = firstLine[5];
+                ScaleXTextBox.Text = firstLine[6];
+                ScaleYTextBox.Text = firstLine[7];
+                ScaleZTextBox.Text = firstLine[8];
 
                 for (int i = 2; i < content.Length; i++) 
                 {
@@ -342,7 +326,9 @@ namespace _3DRedactor
             TranslateXTextBox.Text = "0";
             TranslateYTextBox.Text = "0";
             TranslateZTextBox.Text = "0";
-            RotateAngleTextBox.Text = "0";
+            RotateAngleXTextBox.Text = "0";
+            RotateAngleYTextBox.Text = "0";
+            RotateAngleZTextBox.Text = "0";
             ScaleXTextBox.Text = "1";
             ScaleYTextBox.Text = "1";
             ScaleZTextBox.Text = "1";
